@@ -203,6 +203,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DepartmentsController.cs" />
     <Compile Include="Controllers\ForumController.cs" />
+    <Compile Include="Controllers\ForumMessagesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SuggestionsController.cs" />
@@ -316,6 +317,11 @@
     <Content Include="Views\Suggestions\Details.cshtml" />
     <Content Include="Views\Suggestions\Edit.cshtml" />
     <Content Include="Views\Suggestions\Index.cshtml" />
+    <Content Include="Views\ForumMessages\Create.cshtml" />
+    <Content Include="Views\ForumMessages\Delete.cshtml" />
+    <Content Include="Views\ForumMessages\Details.cshtml" />
+    <Content Include="Views\ForumMessages\Edit.cshtml" />
+    <Content Include="Views\ForumMessages\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
