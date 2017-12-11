@@ -325,6 +325,8 @@ namespace ImprovementOpportunityApp.Controllers
             var user = await UserManager.FindByNameAsync(User.Identity.Name);
             ViewBag.DepartmentId = user.DepartmentId;
 
+            ViewBag.Query = query;
+
             var forums = db.Forums
                 .Include(f => f.Department)
                 .Include(f => f.Suggestion)
