@@ -75,10 +75,10 @@
 
                 @if (item.IsActive)
                 {
-                    <a href="~/Forum/Messages/@item.ForumId">Comment</a>
+                    <a href="~/Forum/Messages/@item.ForumId">View/Add Comments</a>
                     @*@Html.ActionLink("View", "Forum", "Messages", new { id = item.ForumId })*@
                 }
-                @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD))
+                @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) && Convert.ToInt32(ViewBag.DepartmentId) == item.DepartmentId)
                 {
                     @:|
 

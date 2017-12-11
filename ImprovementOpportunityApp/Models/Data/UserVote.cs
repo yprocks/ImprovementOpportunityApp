@@ -21,9 +21,9 @@ namespace ImprovementOpportunityApp.Models.Data
         [Required]
         public int ForumId { get; set; }
 
-        public bool HasUpVoted { get; set; }
+        public bool? HasUpVoted { get; set; }
 
-        public bool HasDownVoted { get; set; }
+        public bool HasVoted { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime DateAdded { get; set; }
@@ -37,6 +37,8 @@ namespace ImprovementOpportunityApp.Models.Data
         public UserVote()
         {
             DateAdded = DateTime.Now;
+            HasVoted = false;
+            HasUpVoted = null;
         }
     }
 }

@@ -12,28 +12,9 @@
     <h4>Suggestion</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Department.Name)
-        </dt>
-
+        
         <dd>
-            @Html.DisplayFor(model => model.Department.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Topic.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Topic.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FirstName)
+            @Html.DisplayFor(model => model.User.FullName)
         </dd>
 
         <dt>
@@ -52,21 +33,21 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Images)
-        </dt>
+        @*<dt>
+                @Html.DisplayNameFor(model => model.Images)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Images)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Images)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Links)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Links)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Links)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Links)
+            </dd>*@
 
         <dt>
             @Html.DisplayNameFor(model => model.DateAdded)
@@ -85,19 +66,33 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.HasReviewed)
+            Has Reviewed
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.HasReviewed)
+            @if (Model.HasReviewed)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.HasConsidered)
+            Has Considered
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.HasConsidered)
+            @if (Model.HasConsidered)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
         </dd>
 
     </dl>

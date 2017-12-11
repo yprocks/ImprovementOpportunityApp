@@ -1,5 +1,7 @@
 ﻿using ImprovementOpportunityApp.AppCommons;
 using ImprovementOpportunityApp.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,16 +16,33 @@ namespace ImprovementOpportunityApp.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         public async Task<ActionResult> Index()
         {
+            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+            ViewBag.DepartmentId = user.DepartmentId;
+
             var forums = await db.Forums.Include(f => f.Department).Include(f => f.Suggestion).Include(f => f.Topic).ToListAsync();
             var forumList = new List<ForumViewModel>();
+
             foreach (var forum in forums)
-            {
                 forumList.Add(new ForumViewModel
                 {
                     Department = forum.Department.Name,
+                    DepartmentId = forum.DepartmentId,
                     DownVotes = forum.DownVotes,
                     UpVotes = forum.UpVotes,
                     DateAdded = forum.DateAdded,
@@ -33,7 +52,7 @@ namespace ImprovementOpportunityApp.Controllers
                     Topic = forum.Topic.Name,
                     IsActive = forum.IsActive
                 });
-            }
+            
             return View(forumList);
         }
 

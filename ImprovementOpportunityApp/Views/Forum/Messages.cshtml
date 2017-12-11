@@ -5,10 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Forum Details</h2>
 
 <div>
-    <h4>Forum</h4>
     <hr />
     <dl class="dl-horizontal">
 
@@ -23,7 +22,7 @@
             @Html.DisplayNameFor(model => model.Department)
         </dt>
         <dd>
-            @Html.DisplayNameFor(model => model.Department)
+            @Html.DisplayFor(model => model.Department)
         </dd>
 
         <dt>
@@ -75,6 +74,30 @@
             }
         </dd>
 
+        <dt>
+            Vote
+        </dt>
+        <dd>
+            @if (Model.HasVoted & Model.HasUpVoted != null)
+            {
+                if ((bool)Model.HasUpVoted)
+                {
+                    <a href="~/Forum/Vote?id=@Model.ForumId&upVote=false" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+                    <a href="~/Forum/Vote?id=@Model.ForumId&upVote=true" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                }
+                else
+                {
+                    <a href="~/Forum/Vote?id=@Model.ForumId&upVote=false" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+                    <a href="~/Forum/Vote?id=@Model.ForumId&upVote=true" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                }
+            }
+            else
+            {
+                <a href="~/Forum/Vote?id=@Model.ForumId&upVote=false" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+                <a href="~/Forum/Vote?id=@Model.ForumId&upVote=true" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+            }
+        </dd>
+
         @*<dt>@Html.DisplayNameFor(model => model.Images)</dt>
             <dd>@Html.DisplayFor(model => model.Images)</dd>
 
@@ -85,7 +108,7 @@
 </div>
 
 <h2 class="">Messages</h2>
-
+<hr />
 <div class="row container">
     <div class="col-sm-8">
         @foreach (var message in Model.Messages)
@@ -95,7 +118,7 @@
                     <div class="col-sm-2">
                         <b>@message.UserName</b>
                     </div>
-                    <div class="col-sm-8 text-center">
+                    <div class="col-sm-8 text-center" style="padding:0 15px 15px 15px;">
                         @Html.Raw(message.Message)
                     </div>
                     <div class="col-sm-2">
@@ -103,10 +126,10 @@
                         {
                             if (Model.CurrentUserName == message.UserName)
                             {
-                                <div class="pull-right">
-                                    <a href="#reply" class="">Edit</a> |
-                                    <a href="~/Forum/DeleteMessage/@message.ForumMessageId" class="">Delete</a>
-                                </div>
+                        <div class="pull-right">
+                            <a href="~/Forum/EditMessage/@message.ForumMessageId" class="">Edit</a> |
+                            <a href="~/Forum/DeleteMessage/@message.ForumMessageId" class="">Delete</a>
+                        </div>
                             }
                         }
                     </div>
@@ -132,24 +155,27 @@
     </div>
 </div>
 
-<div>
-    <h2>Comment</h2>
-    @using (@Html.BeginForm("AddComment", "Forum", FormMethod.Post,
+@if (Model.IsActive)
+{
+    <div>
+        <h2>Comment</h2>
+        @using (@Html.BeginForm("AddComment", "Forum", FormMethod.Post,
                         new { @class = "form-horizontal", id = "add-comment" }))
     {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <input type="hidden" name="ForumId" value="@Model.ForumId" />
-        <label>Add a Comment</label>
-        <textarea placeholder="Add a comment" name="Comment" maxlength="512" class="form-control" required></textarea>
-        @*<br />
-            <label>Add Links </label><input type="text" name="Links" class="form-control" placeholder="Add Links"/>
-            <br />
-            <label>Images </label><input type="file" name="Images" class="form-control" placeholder="Upload Images" />*@
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input type="hidden" name="ForumId" value="@Model.ForumId" />
+    <label>Add a Comment</label>
+    <textarea placeholder="Add a comment" name="Comment" maxlength="512" class="form-control" required></textarea>
+    @*<br />
+        <label>Add Links </label><input type="text" name="Links" class="form-control" placeholder="Add Links"/>
         <br />
-        <button type="submit" class="btn btn-default">Submit</button>
+        <label>Images </label><input type="file" name="Images" class="form-control" placeholder="Upload Images" />*@
+    <br />
+    <button type="submit" class="btn btn-default">Submit</button>
     }
-</div>
+    </div>
+}
 <br />
 <p>
     @*@Html.ActionLink("Edit", "Edit", new { id = Model.ForumId }) |*@

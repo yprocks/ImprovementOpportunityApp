@@ -15,7 +15,7 @@ namespace ImprovementOpportunityApp.Models
         [Display(Name = "Date Added")]
         public DateTime DateAdded { get; set; }
 
-        [Display(Name = "Last Added")]
+        [Display(Name = "Last Updated")]
         public DateTime LastUpdated { get; set; }
 
         public string Department { get; set; }
@@ -28,7 +28,12 @@ namespace ImprovementOpportunityApp.Models
         [Display(Name = "Down Votes")]
         public int DownVotes { get; set; }
 
+        [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
+
+        public int DepartmentId { get; set; }
+        public bool? HasUpVoted { get; set; } = null;
+        public bool HasVoted { get; set; }
 
         // Fields used for message view 
         public string Links { get; set; }
@@ -38,6 +43,7 @@ namespace ImprovementOpportunityApp.Models
         public string CurrentUserName { get; set; }
 
         public IList<MessageViewModel> Messages { get; set; }
+      
     }
 
     public class MessageViewModel
@@ -79,6 +85,7 @@ namespace ImprovementOpportunityApp.Models
         public int ForumMessageId { get; set; }
 
         [Required]
+        [StringLength(512)]
         public string Message { get; set; }
 
         //public string Links { get; set; }

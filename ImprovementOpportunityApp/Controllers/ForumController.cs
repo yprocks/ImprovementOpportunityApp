@@ -10,9 +10,11 @@ using System.Web.Mvc;
 using ImprovementOpportunityApp.Models;
 using ImprovementOpportunityApp.Models.Data;
 using Microsoft.AspNet.Identity.Owin;
+using ImprovementOpportunityApp.AppCommons;
 
 namespace ImprovementOpportunityApp.Controllers
 {
+    [Authorize(Roles = ApplicationRoles.EMPLOYEE + ", " + ApplicationRoles.DEPARTMENT_HEAD)]
     public class ForumController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -31,16 +33,20 @@ namespace ImprovementOpportunityApp.Controllers
         }
 
         // GET: Forum
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var forums = db.Forums.Include(f => f.Department).Include(f => f.Suggestion).Include(f => f.Topic);
-            return View(await forums.ToListAsync());
+            //var forums = db.Forums.Include(f => f.Department).Include(f => f.Suggestion).Include(f => f.Topic);
+            //return View(await forums.ToListAsync());
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Forum/Details/5
-        public async Task<ActionResult> Messages(int? id) 
+        public async Task<ActionResult> Messages(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+            UserVote userVote = await db.UserVotes.FirstOrDefaultAsync(v => v.ForumId == id && v.UserId == user.Id);
 
             var forum = await db.Forums
                     .Include("Department")
@@ -67,6 +73,12 @@ namespace ImprovementOpportunityApp.Controllers
                 CurrentUserName = User.Identity.Name,
                 Messages = new List<MessageViewModel>()
             };
+
+            if (userVote != null)
+            {
+                forumModel.HasVoted = userVote.HasVoted;
+                forumModel.HasUpVoted = userVote.HasUpVoted;
+            }
 
             foreach (var forumMessage in forum.ForumMessages)
             {
@@ -114,34 +126,34 @@ namespace ImprovementOpportunityApp.Controllers
             return RedirectToAction("Messages", "Forum", new { id = model.ForumId });
         }
 
-        // GET: Forum/Create
-        public ActionResult Create()
-        {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
-            ViewBag.SuggestionId = new SelectList(db.Suggestions, "SuggestionId", "UserId");
-            ViewBag.TopicId = new SelectList(db.Topics, "TopicId", "Name");
-            return View();
-        }
+        //// GET: Forum/Create
+        //public ActionResult Create()
+        //{
+        //    ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
+        //    ViewBag.SuggestionId = new SelectList(db.Suggestions, "SuggestionId", "UserId");
+        //    ViewBag.TopicId = new SelectList(db.Topics, "TopicId", "Name");
+        //    return View();
+        //}
 
-        // POST: Forum/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ForumId,SuggestionId,DepartmentId,TopicId,DateAdded,LastUpdated,IsActive,UpVotes,DownVotes")] Forum forum)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Forums.Add(forum);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+        //// POST: Forum/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Create([Bind(Include = "ForumId,SuggestionId,DepartmentId,TopicId,DateAdded,LastUpdated,IsActive,UpVotes,DownVotes")] Forum forum)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Forums.Add(forum);
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction("Index");
+        //    }
 
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", forum.DepartmentId);
-            ViewBag.SuggestionId = new SelectList(db.Suggestions, "SuggestionId", "UserId", forum.SuggestionId);
-            ViewBag.TopicId = new SelectList(db.Topics, "TopicId", "Name", forum.TopicId);
-            return View(forum);
-        }
+        //    ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", forum.DepartmentId);
+        //    ViewBag.SuggestionId = new SelectList(db.Suggestions, "SuggestionId", "UserId", forum.SuggestionId);
+        //    ViewBag.TopicId = new SelectList(db.Topics, "TopicId", "Name", forum.TopicId);
+        //    return View(forum);
+        //}
 
         //// GET: Forum/Edit/5
         //public async Task<ActionResult> Edit(int? id)
@@ -192,27 +204,36 @@ namespace ImprovementOpportunityApp.Controllers
             if (forumMessage == null)
                 return HttpNotFound();
 
-            ViewBag.ForumId = new SelectList(db.Forums, "ForumId", "ForumId", forumMessage.ForumId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", forumMessage.UserId);
-            return View(forumMessage);
+            var editComment = new EditCommentModel
+            {
+                ForumId = forumMessage.ForumId,
+                ForumMessageId = forumMessage.ForumMessageId,
+                Message = forumMessage.Message
+            };
+
+            //ViewBag.ForumId = new SelectList(db.Forums, "ForumId", "ForumId", forumMessage.ForumId);
+            //ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", forumMessage.UserId);
+            return View(editComment);
         }
 
-        // POST: ForumMessages/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditMessage([Bind(Include = "ForumMessageId,UserId,ForumId,ReplyMessageId,Message,DateAdded,LastUpdated,Links,Images")] ForumMessage forumMessage)
+        public async Task<ActionResult> EditMessage(EditCommentModel model)
         {
             if (ModelState.IsValid)
             {
+                var forumMessage = await db.ForumMessages.FindAsync(model.ForumMessageId);
+
+                forumMessage.Message = model.Message;
+                forumMessage.LastUpdated = DateTime.Now;
+
                 db.Entry(forumMessage).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Messages", new { id = model.ForumId });
             }
-            ViewBag.ForumId = new SelectList(db.Forums, "ForumId", "ForumId", forumMessage.ForumId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", forumMessage.UserId);
-            return View(forumMessage);
+            //ViewBag.ForumId = new SelectList(db.Forums, "ForumId", "ForumId", model.ForumId);
+            //ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", forumMessage.UserId);
+            return View(model);
         }
 
 
@@ -244,6 +265,59 @@ namespace ImprovementOpportunityApp.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction("Messages", new { id = forumId });
 
+        }
+
+        public async Task<ActionResult> Update(int id)
+        {
+            Forum forum = await db.Forums.FindAsync(id);
+            if (forum == null)
+                return HttpNotFound();
+
+            forum.IsActive = !forum.IsActive;
+            forum.LastUpdated = DateTime.Now;
+
+            db.Entry(forum).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Vote(int id, bool upVote)
+        {
+            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+
+            UserVote userVote = await db.UserVotes.FirstOrDefaultAsync(v => v.ForumId == id && v.UserId == user.Id);
+
+            if (userVote == null)
+            {
+                userVote = new UserVote
+                {
+                    HasUpVoted = upVote ? true : false,
+                    HasVoted = true,
+                    UserId = user.Id,
+                    ForumId = id
+                };
+                db.UserVotes.Add(userVote);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                userVote.HasUpVoted = upVote ? true : false;
+                db.Entry(userVote).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            }
+
+            int upVotes = db.UserVotes.Count(v => v.ForumId == id && v.HasVoted && v.HasUpVoted != null && (bool)v.HasUpVoted);
+            int downVotes = db.UserVotes.Count(v => v.ForumId == id && v.HasVoted && v.HasUpVoted != null && (bool)!v.HasUpVoted);
+
+            var forum = await db.Forums.FindAsync(id);
+            forum.UpVotes = upVotes;
+            forum.DownVotes = downVotes;
+
+            db.Entry(forum).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Messages", new { id = id });
         }
 
         //// GET: Forum/Delete/5

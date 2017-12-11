@@ -1,25 +1,34 @@
 ﻿@model IEnumerable<ImprovementOpportunityApp.Models.Data.Suggestion>
+@using ImprovementOpportunityApp.AppCommons
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
+@if (User.IsInRole(ApplicationRoles.EMPLOYEE))
+{
+    <h2>Your Suggestions</h2>
+    <p>
+        @Html.ActionLink("Add Suggestion", "Create")
+    </p>
+}
+else
+{
+    <h2>Department Suggestions</h2>
+}
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Department.Name)
+            Department
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Topic.Name)
+            Topic
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.User.FirstName)
+            Suggested By
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Title)
@@ -27,68 +36,103 @@
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.Images)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Links)
+            </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.Images)
+            Date Added
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Links)
+            Last Updated
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DateAdded)
+            Has Reviewed
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastUpdated)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HasReviewed)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HasConsidered)
+            Has Approved
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Department.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Topic.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Images)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Links)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateAdded)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastUpdated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HasReviewed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HasConsidered)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.SuggestionId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.SuggestionId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.SuggestionId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Topic.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Images)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Links)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAdded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @if (item.HasReviewed)
+                {
+                    @:Yes
+                }
+                else
+                {
+                    @:No
+                }
+            </td>
+            <td>
+                @if (item.HasConsidered)
+                {
+                    @:Yes
+                }
+                else
+                {
+                    @:No
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.SuggestionId })
+                @if (User.IsInRole(ApplicationRoles.EMPLOYEE))
+                {
+                    if (!item.HasConsidered)
+                    {
+                        @:|
+                        @Html.ActionLink("Edit", "Edit", new { id = item.SuggestionId })
+                        @:|
+                        @Html.ActionLink("Delete", "Delete", new { id = item.SuggestionId })
+                    }
+                }
+                else if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD))
+                {
+                    if (!item.HasConsidered)
+                    {
+                        @:|
+                        @Html.ActionLink("Approve", "Approve", new { id = item.SuggestionId })
+                    }
+                    else
+                    {
+                        @:| Forum Started
+                    }
+                }
+            </td>
+        </tr>
+    }
 
 </table>

@@ -9,9 +9,11 @@ using System.Web;
 using System.Web.Mvc;
 using ImprovementOpportunityApp.Models;
 using ImprovementOpportunityApp.Models.Data;
+using ImprovementOpportunityApp.AppCommons;
 
 namespace ImprovementOpportunityApp.Controllers
 {
+    [Authorize(Roles = ApplicationRoles.DEPARTMENT_HEAD)]
     public class TopicsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
