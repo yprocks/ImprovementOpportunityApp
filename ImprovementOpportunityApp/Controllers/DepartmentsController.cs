@@ -50,31 +50,40 @@ namespace ImprovementOpportunityApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "DepartmentId,Name,IsActive,DateAdded")] Department department)
+        public async Task<ActionResult> Create(AddDepartmentModel model)
         {
             if (ModelState.IsValid)
             {
+                Department department = new Department
+                {
+                    Name = model.Name
+                };
                 db.Departments.Add(department);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(department);
+            return View(model);
         }
 
         // GET: Departments/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             Department department = await db.Departments.FindAsync(id);
+
             if (department == null)
-            {
                 return HttpNotFound();
-            }
-            return View(department);
+
+            var model = new EditDepartmentModel
+            {
+                DepartmentId = department.DepartmentId,
+                IsActive = department.IsActive,
+                Name = department.Name
+            };
+            return View(model);
         }
 
         // POST: Departments/Edit/5
@@ -82,15 +91,20 @@ namespace ImprovementOpportunityApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "DepartmentId,Name,IsActive,DateAdded")] Department department)
+        public async Task<ActionResult> Edit(EditDepartmentModel model)
         {
             if (ModelState.IsValid)
             {
+                Department department = await db.Departments.FindAsync(model.DepartmentId);
+
+                department.Name = model.Name;
+                department.IsActive = model.IsActive;
+
                 db.Entry(department).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(department);
+            return View(model);
         }
 
         // GET: Departments/Delete/5

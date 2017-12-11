@@ -5,10 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Department Details</h2>
 
 <div>
-    <h4>Department</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -24,7 +23,14 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsActive)
+            @if (Model.IsActive)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
         </dd>
 
         <dt>

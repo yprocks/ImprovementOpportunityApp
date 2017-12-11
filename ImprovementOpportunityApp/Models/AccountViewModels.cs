@@ -64,6 +64,19 @@ namespace ImprovementOpportunityApp.Models
 
     public class RegisterViewModel
     {
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Department")]
+        public int DepartmentId { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -79,6 +92,9 @@ namespace ImprovementOpportunityApp.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Department Head")]
+        public bool IsDepartmentHead { get; set; }
     }
 
     public class ResetPasswordViewModel

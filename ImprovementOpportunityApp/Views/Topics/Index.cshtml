@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Topics</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Add New", "Create")
 </p>
 <table class="table">
     <tr>
@@ -30,7 +30,14 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsActive)
+            @if (item.IsActive)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.DateAdded)

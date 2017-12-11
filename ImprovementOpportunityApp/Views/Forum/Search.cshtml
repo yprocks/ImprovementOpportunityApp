@@ -2,10 +2,12 @@
 @using ImprovementOpportunityApp.AppCommons;
 
 @{
-    ViewBag.Title = "Forums";
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Forums</h2>
+
+<h2>Serach Results for @ViewBag.Query</h2>
 
 <form method="get" action="~/Forum/Search">
     <div class="row">
@@ -55,61 +57,62 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Department)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Topic)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateAdded)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastUpdated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpVotes)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DownVotes)
-        </td>
-        <td>
-            @if (item.IsActive)
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Topic)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAdded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpVotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DownVotes)
+            </td>
+            <td>
+                @if (item.IsActive)
                 {
-                @:Yes
+                    @:Yes
                 }
                 else
                 {
-                @:No
+                    @:No
                 }
-        </td>
-        <td>
-            @*@Html.ActionLink("Edit", "Edit", new { id = item.ForumId }) |*@
+            </td>
+            <td>
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.ForumId }) |*@
 
-            @if (item.IsActive)
+                @if (item.IsActive)
                 {
-                <a href="~/Forum/Messages/@item.ForumId">View/Add Comments</a>
-                @*@Html.ActionLink("View", "Forum", "Messages", new { id = item.ForumId })*@
+                    <a href="~/Forum/Messages/@item.ForumId">View/Add Comments</a>
+                    @*@Html.ActionLink("View", "Forum", "Messages", new { id = item.ForumId })*@
                 }
-            @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) && Convert.ToInt32(ViewBag.DepartmentId) == item.DepartmentId)
+                @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) && Convert.ToInt32(ViewBag.DepartmentId) == item.DepartmentId)
                 {
-                @:|
+                    @:|
 
                     if (item.IsActive)
                     {
-                <a href="~/Forum/Update/@item.ForumId">Deactivate</a>
+                        <a href="~/Forum/Update/@item.ForumId">Deactivate</a>
                     }
                     else
                     {
-                <a href="~/Forum/Update/@item.ForumId">Activate</a>
+                        <a href="~/Forum/Update/@item.ForumId">Activate</a>
                     }
                 }
-        </td>
-    </tr>
+            </td>
+        </tr>
     }
 
 </table>
+

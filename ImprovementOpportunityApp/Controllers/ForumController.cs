@@ -320,6 +320,42 @@ namespace ImprovementOpportunityApp.Controllers
             return RedirectToAction("Messages", new { id = id });
         }
 
+        public async Task<ActionResult> Search(string query)
+        {
+            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+            ViewBag.DepartmentId = user.DepartmentId;
+
+            var forums = db.Forums
+                .Include(f => f.Department)
+                .Include(f => f.Suggestion)
+                .Include(f => f.Topic)
+                .Where(f => f.Suggestion.Title.ToLower().Contains(query.ToLower()) 
+                    || f.Department.Name.ToLower().Contains(query.ToLower())
+                    || f.Topic.Name.ToLower().Contains(query.ToLower())
+                    || f.DateAdded.Month.ToString() == query
+                    || f.DateAdded.Day.ToString() == query
+                    || f.DateAdded.Year.ToString() == query);
+
+            var forumList = new List<ForumViewModel>();
+
+            foreach (var forum in forums)
+                forumList.Add(new ForumViewModel
+                {
+                    Department = forum.Department.Name,
+                    DepartmentId = forum.DepartmentId,
+                    DownVotes = forum.DownVotes,
+                    UpVotes = forum.UpVotes,
+                    DateAdded = forum.DateAdded,
+                    LastUpdated = forum.LastUpdated,
+                    ForumId = forum.ForumId,
+                    Title = forum.Suggestion.Title,
+                    Topic = forum.Topic.Name,
+                    IsActive = forum.IsActive
+                });
+
+            return View(forumList);
+        }
+
         //// GET: Forum/Delete/5
         //public async Task<ActionResult> Delete(int? id)
         //{

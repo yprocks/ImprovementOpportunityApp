@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
+<h2>Delete Topic</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -25,7 +25,14 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsActive)
+            @if (Model.IsActive)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
         </dd>
 
         <dt>

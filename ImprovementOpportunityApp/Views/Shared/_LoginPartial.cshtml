@@ -19,19 +19,24 @@
             @*<li>
                     @Html.ActionLink("Forum Message ", "Index", "ForumMessages", routeValues: null, htmlAttributes: new { title = "Forum Messages" })
                 </li>*@
-            <li>
-                @Html.ActionLink("Suggestions ", "Index", "Suggestions", routeValues: null, htmlAttributes: new { title = "Suggestions" })
-            </li>
+            @if (User.IsInRole(ApplicationRoles.FIRM_ADMIN))
+            {
+                <li>@Html.ActionLink("Departments", "Index", "Departments", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                <li>@Html.ActionLink("Add User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+            }
+            else
+            {
+                <li>
+                    @Html.ActionLink("Suggestions ", "Index", "Suggestions", routeValues: null, htmlAttributes: new { title = "Suggestions" })
+                </li>
+            }
             @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD))
             {
                 <li>
                     @Html.ActionLink("Topics ", "Index", "Topics", routeValues: null, htmlAttributes: new { title = "Topics" })
                 </li>
-            }           
-            @if (User.IsInRole(ApplicationRoles.FIRM_ADMIN))
-            {
-                <li>@Html.ActionLink("Add User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
             }
+
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
     }

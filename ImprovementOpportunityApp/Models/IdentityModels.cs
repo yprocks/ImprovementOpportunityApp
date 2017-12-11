@@ -90,5 +90,6 @@ namespace ImprovementOpportunityApp.Models
         public DbSet<ForumMessage> ForumMessages { get; set; }
         public DbSet<UserVote> UserVotes { get; set; }
 
+        //public System.Data.Entity.DbSet<ImprovementOpportunityApp.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

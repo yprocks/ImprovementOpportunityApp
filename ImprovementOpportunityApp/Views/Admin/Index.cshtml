@@ -1,0 +1,93 @@
+﻿@model IEnumerable<ImprovementOpportunityApp.Models.UserViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Admin Panel</h2>
+<hr />
+
+<h4>Users</h4>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Department)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserRole)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateAdded)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastUpdated)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRole)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAdded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @if (item.IsActive)
+                {
+                    @:Yes
+                }
+                else
+                {
+                    @:No
+                }
+            </td>
+
+            <td>
+                @Html.ActionLink("Edit", "EditUser", new { id = item.Id }) |
+                @*@Html.ActionLink("Details", "Details", "Account", new { id = item.Id })*@
+                @if (item.IsActive)
+                {
+                    <a href="~/Admin/UpdateUserStatus/@item.Id">Deactivate</a>
+                }
+                else
+                {
+                    <a href="~/Admin/UpdateUserStatus/@item.Id">Activate</a>
+                }            
+            </td>
+        </tr>
+    }
+
+</table>

@@ -50,31 +50,42 @@ namespace ImprovementOpportunityApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "TopicId,Name,IsActive,DateAdded")] Topic topic)
+        public async Task<ActionResult> Create(AddTopicModel model)
         {
             if (ModelState.IsValid)
             {
+                var topic = new Topic
+                {
+                    Name = model.Name
+                };
+
                 db.Topics.Add(topic);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(topic);
+            return View(model);
         }
 
         // GET: Topics/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             Topic topic = await db.Topics.FindAsync(id);
+
             if (topic == null)
-            {
                 return HttpNotFound();
-            }
-            return View(topic);
+
+            var model = new EditTopicModel
+            {
+                IsActive = topic.IsActive,
+                Name = topic.Name,
+                TopicId = topic.TopicId
+            };
+
+            return View(model);
         }
 
         // POST: Topics/Edit/5
@@ -82,15 +93,22 @@ namespace ImprovementOpportunityApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "TopicId,Name,IsActive,DateAdded")] Topic topic)
+        public async Task<ActionResult> Edit(EditTopicModel model)
         {
             if (ModelState.IsValid)
             {
+                var topic = await db.Topics.FindAsync(model.TopicId);
+                if (topic == null)
+                    return HttpNotFound();
+
+                topic.IsActive = model.IsActive;
+                topic.Name = model.Name;
+
                 db.Entry(topic).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(topic);
+            return View(model);
         }
 
         // GET: Topics/Delete/5

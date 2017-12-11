@@ -18,6 +18,7 @@ namespace ImprovementOpportunityApp.Controllers
     public class SuggestionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
         private ApplicationUserManager _userManager;
 
         public ApplicationUserManager UserManager
@@ -79,8 +80,8 @@ namespace ImprovementOpportunityApp.Controllers
         // GET: Suggestions/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
-            ViewBag.TopicId = new SelectList(db.Topics, "TopicId", "Name");
+            ViewBag.DepartmentId = new SelectList(db.Departments.Where(d => d.IsActive), "DepartmentId", "Name");
+            ViewBag.TopicId = new SelectList(db.Topics.Where(d => d.IsActive), "TopicId", "Name");
             //ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
             return View();
         }
