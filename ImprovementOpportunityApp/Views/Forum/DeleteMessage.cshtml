@@ -12,29 +12,6 @@
     <h4>ForumMessage</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Forum.ForumId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Forum.ForumId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FirstName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ReplyMessageId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ReplyMessageId)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Message)
@@ -60,30 +37,31 @@
             @Html.DisplayFor(model => model.LastUpdated)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Links)
-        </dt>
+        @*<dt>
+                @Html.DisplayNameFor(model => model.Links)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Links)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Links)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Images)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Images)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Images)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Images)
+            </dd>*@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to Messages", "Messages", new { id = Model.ForumId })
         </div>
     }
 </div>

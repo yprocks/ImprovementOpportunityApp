@@ -87,7 +87,7 @@ namespace ImprovementOpportunityApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ForumMessageId,UserId,ForumId,ReplyMessageId,Message,DateAdded,LastUpdated,Links,Images")] ForumMessage forumMessage)
+        public async Task<ActionResult> Edit([Bind(Include = "ForumMessageId,ForumId,Message")] ForumMessage forumMessage)
         {
             if (ModelState.IsValid)
             {
@@ -101,29 +101,30 @@ namespace ImprovementOpportunityApp.Controllers
         }
 
         // GET: ForumMessages/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> DeleteMessage(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            
             ForumMessage forumMessage = await db.ForumMessages.FindAsync(id);
             if (forumMessage == null)
-            {
                 return HttpNotFound();
-            }
+            
             return View(forumMessage);
         }
 
         // POST: ForumMessages/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteMessage")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             ForumMessage forumMessage = await db.ForumMessages.FindAsync(id);
+            if (forumMessage == null)
+                return HttpNotFound();
+            int forumId = forumMessage.ForumId;
             db.ForumMessages.Remove(forumMessage);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Messages", new { id = forumId });
         }
 
         protected override void Dispose(bool disposing)

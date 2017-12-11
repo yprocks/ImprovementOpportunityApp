@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ImprovementOpportunityApp.Models;
+using ImprovementOpportunityApp.AppCommons;
 
 namespace ImprovementOpportunityApp.Controllers
 {
@@ -57,6 +58,13 @@ namespace ImprovementOpportunityApp.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) || User.IsInRole(ApplicationRoles.EMPLOYEE))
+                    return RedirectToAction("Index", "Home");
+                else
+                    return RedirectToAction("Index", "Admin");
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }

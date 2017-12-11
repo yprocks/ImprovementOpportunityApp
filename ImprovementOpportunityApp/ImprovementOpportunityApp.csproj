@@ -20,8 +20,8 @@
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -235,6 +235,7 @@
     <Compile Include="Models\Data\Suggestion.cs" />
     <Compile Include="Models\Data\Topic.cs" />
     <Compile Include="Models\Data\UserVote.cs" />
+    <Compile Include="Models\ForumViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -299,7 +300,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Forum\Create.cshtml" />
     <Content Include="Views\Forum\Delete.cshtml" />
-    <Content Include="Views\Forum\Details.cshtml" />
+    <Content Include="Views\Forum\Messages.cshtml" />
     <Content Include="Views\Forum\Edit.cshtml" />
     <Content Include="Views\Forum\Index.cshtml" />
     <Content Include="Views\Topics\Create.cshtml" />
@@ -318,9 +319,9 @@
     <Content Include="Views\Suggestions\Edit.cshtml" />
     <Content Include="Views\Suggestions\Index.cshtml" />
     <Content Include="Views\ForumMessages\Create.cshtml" />
-    <Content Include="Views\ForumMessages\Delete.cshtml" />
+    <Content Include="Views\Forum\DeleteMessage.cshtml" />
     <Content Include="Views\ForumMessages\Details.cshtml" />
-    <Content Include="Views\ForumMessages\Edit.cshtml" />
+    <Content Include="Views\Forum\EditMessage.cshtml" />
     <Content Include="Views\ForumMessages\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,157 @@
+﻿@model ImprovementOpportunityApp.Models.ForumViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Forum</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Department)
+        </dt>
+        <dd>
+            @Html.DisplayNameFor(model => model.Department)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Topic)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Topic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAdded)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateAdded)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastUpdated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastUpdated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpVotes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpVotes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DownVotes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DownVotes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd>
+            @if (Model.IsActive)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
+        </dd>
+
+        @*<dt>@Html.DisplayNameFor(model => model.Images)</dt>
+            <dd>@Html.DisplayFor(model => model.Images)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.Links)</dt>
+            <dd>@Html.DisplayFor(model => model.Links)</dd>*@
+    </dl>
+
+</div>
+
+<h2 class="">Messages</h2>
+
+<div class="row container">
+    <div class="col-sm-8">
+        @foreach (var message in Model.Messages)
+        {
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <b>@message.UserName</b>
+                    </div>
+                    <div class="col-sm-8 text-center">
+                        @Html.Raw(message.Message)
+                    </div>
+                    <div class="col-sm-2">
+                        @if (Model.IsActive)
+                        {
+                            if (Model.CurrentUserName == message.UserName)
+                            {
+                                <div class="pull-right">
+                                    <a href="#reply" class="">Edit</a> |
+                                    <a href="~/Forum/DeleteMessage/@message.ForumMessageId" class="">Delete</a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="images">
+                            @message.Images
+                        </div>
+                        <div class="links">
+                            @message.Links
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-left">Date Added: @message.DateAdded</div>
+                        <div class="pull-right">Last Updated: @message.LastUpdated</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <h2>Comment</h2>
+    @using (@Html.BeginForm("AddComment", "Forum", FormMethod.Post,
+                        new { @class = "form-horizontal", id = "add-comment" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="hidden" name="ForumId" value="@Model.ForumId" />
+        <label>Add a Comment</label>
+        <textarea placeholder="Add a comment" name="Comment" maxlength="512" class="form-control" required></textarea>
+        @*<br />
+            <label>Add Links </label><input type="text" name="Links" class="form-control" placeholder="Add Links"/>
+            <br />
+            <label>Images </label><input type="file" name="Images" class="form-control" placeholder="Upload Images" />*@
+        <br />
+        <button type="submit" class="btn btn-default">Submit</button>
+    }
+</div>
+<br />
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.ForumId }) |*@
+    @Html.ActionLink("Back to List", "Index", "Home")
+</p>

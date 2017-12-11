@@ -1,37 +1,41 @@
 ﻿@using Microsoft.AspNet.Identity
+@using ImprovementOpportunityApp.AppCommons
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
-
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li>
-            @Html.ActionLink("Departments ", "Index", "Departments", routeValues: null, htmlAttributes: new { title = "Department" })
-        </li>
-        <li>
-            @Html.ActionLink("Forums ", "Index", "Forum", routeValues: null, htmlAttributes: new { title = "Forums" })
-        </li>
-        <li>
-            @Html.ActionLink("Forum Message ", "Index", "ForumMessages", routeValues: null, htmlAttributes: new { title = "Forum Messages" })
-        </li>
-        <li>
-            @Html.ActionLink("Suggestions ", "Index", "Suggestions", routeValues: null, htmlAttributes: new { title = "Suggestions" })
-        </li>
-        <li>
-            @Html.ActionLink("Topics ", "Index", "Topics", routeValues: null, htmlAttributes: new { title = "Topics" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
+        @Html.AntiForgeryToken() 
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink("Hello " + User.Identity.Name, "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li>
+                @Html.ActionLink("Departments ", "Index", "Departments", routeValues: null, htmlAttributes: new { title = "Department" })
+            </li>
+            <li>
+                @Html.ActionLink("Forums ", "Index", "Forum", routeValues: null, htmlAttributes: new { title = "Forums" })
+            </li>
+            <li>
+                @Html.ActionLink("Forum Message ", "Index", "ForumMessages", routeValues: null, htmlAttributes: new { title = "Forum Messages" })
+            </li>
+            <li>
+                @Html.ActionLink("Suggestions ", "Index", "Suggestions", routeValues: null, htmlAttributes: new { title = "Suggestions" })
+            </li>
+            <li>
+                @Html.ActionLink("Topics ", "Index", "Topics", routeValues: null, htmlAttributes: new { title = "Topics" })
+            </li>
+            @if (User.IsInRole(ApplicationRoles.FIRM_ADMIN))
+            {
+                <li>@Html.ActionLink("Add User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+            }
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
         <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }
