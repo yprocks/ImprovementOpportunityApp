@@ -20,39 +20,58 @@ namespace ImprovementOpportunityApp.Migrations
         protected override void Seed(ImprovementOpportunityApp.Models.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
-            //var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
-            //var employeeRole = new IdentityRole
-            //{
-            //    Name = ApplicationRoles.EMPLOYEE
-            //};
-            //roleManager.Create(employeeRole);
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-            //var deptRole = new IdentityRole
-            //{
-            //    Name = ApplicationRoles.DEPARTMENT_HEAD
-            //};
-            //roleManager.Create(deptRole);
+            IdentityRole employeeRole = roleManager.FindByName(ApplicationRoles.EMPLOYEE);
+            IdentityRole deptRole = roleManager.FindByName(ApplicationRoles.DEPARTMENT_HEAD);
+            IdentityRole adminRole = roleManager.FindByName(ApplicationRoles.FIRM_ADMIN);
 
-            //var adminRole = new IdentityRole
-            //{
-            //    Name = ApplicationRoles.FIRM_ADMIN
-            //};
-            //roleManager.Create(adminRole);
+            if (employeeRole == null)
+            {
+                employeeRole = new IdentityRole
+                {
+                    Name = ApplicationRoles.EMPLOYEE
+                };
+                roleManager.Create(employeeRole);
+            }
 
+            if (deptRole == null)
+            {
+                deptRole = new IdentityRole
+                {
+                    Name = ApplicationRoles.DEPARTMENT_HEAD
+                };
+                roleManager.Create(deptRole);
+            }
+
+            if (adminRole == null)
+            {
+                adminRole = new IdentityRole
+                {
+                    Name = ApplicationRoles.FIRM_ADMIN
+                };
+                roleManager.Create(adminRole);
+            }
+
+            Models.Data.Department departmentIT = context.Departments.FirstOrDefault(d => d.Name.ToLower() == "IT Department");
+            if (departmentIT == null)
+            {
+                departmentIT = context.Departments.Add(new Models.Data.Department
+                {
+                    Name = "IT Department"
+                });
+            }
+            context.SaveChanges();
+            
             //Models.Data.Department department = context.Departments.Add(new Models.Data.Department
             //{
             //    Name = "Medical Research"
             //});
-            //Models.Data.Department departmentIT = context.Departments.Add(new Models.Data.Department
-            //{
-            //    Name = "IT Dept"
-            //});
+
             //Models.Data.Topic topic = context.Topics.Add(new Models.Data.Topic
             //{
             //    Name = "Accessories"
             //});
-
-            //context.SaveChanges();
 
             //Models.ApplicationUser userQuinee = context.Users.Add(new Models.ApplicationUser
             //{
@@ -83,18 +102,27 @@ namespace ImprovementOpportunityApp.Migrations
             //    PhoneNumber = "4166124124",
             //    UserName = "alex@gmail.com"
             //});
+            var userManger = new UserManager<Models.ApplicationUser>(new UserStore<Models.ApplicationUser>(context));
+            Models.ApplicationUser userAdmin = userManger.FindByName("pragnesh@gmail.com");
 
-            //Models.ApplicationUser userAdmin = context.Users.Add(new Models.ApplicationUser
-            //{
-            //    Department = department,
-            //    Email = "pragnesh@gmail.com",
-            //    FirstName = "Pragnesh",
-            //    LastName = "Patel",
-            //    PhoneNumber = "4166124124",
-            //    UserName = "pragnesh@gmail.com"
-            //});
+            if (userAdmin == null)
+            {
+                userAdmin = context.Users.Add(new Models.ApplicationUser
+                {
+                    Department = departmentIT,
+                    Email = "pragnesh@gmail.com",
+                    FirstName = "Pragnesh",
+                    LastName = "Patel",
+                    PhoneNumber = "4166124124",
+                    UserName = "pragnesh@gmail.com"
+                });
 
-            //var userManger = new UserManager<Models.ApplicationUser>(new UserStore<Models.ApplicationUser>(context));
+                userManger.Create(userAdmin, "Pragnesh123!");
+                userManger.AddToRole(userAdmin.Id, ApplicationRoles.FIRM_ADMIN);
+            }
+
+            context.SaveChanges();
+
             ////var adminEmail = ConfigurationManager.AppSettings["AdminEmail"];
             //userManger.Create(userQuinee, "Quinee123!");
             //userManger.AddToRole(userQuinee.Id, ApplicationRoles.EMPLOYEE);
@@ -104,9 +132,6 @@ namespace ImprovementOpportunityApp.Migrations
 
             //userManger.Create(userDept, "Alex123!");
             //userManger.AddToRole(userDept.Id, ApplicationRoles.DEPARTMENT_HEAD);
-
-            //userManger.Create(userAdmin, "Pragnesh123!");
-            //userManger.AddToRole(userAdmin.Id, ApplicationRoles.FIRM_ADMIN);
 
             //Models.Data.Suggestion quineeSuggestion = context.Suggestions.Add(new Models.Data.Suggestion
             //{
