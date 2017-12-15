@@ -3,9 +3,6 @@ namespace ImprovementOpportunityApp.Migrations
     using ImprovementOpportunityApp.AppCommons;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
-    using System;
-    using System.Configuration;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
