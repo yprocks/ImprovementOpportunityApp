@@ -14,7 +14,7 @@
         <div class="col-sm-3 pull-right">
             <div id="imaginary_container">
                 <div class="input-group stylish-input-group">
-                    <input type="text" name="query" class="form-control" placeholder="Search Forum">
+                    <input type="text" name="query" class="form-control" placeholder="Search Forum" required>
                     <span class="input-group-addon">
                         <button type="submit">
                             <span class="glyphicon glyphicon-search"></span>
@@ -50,6 +50,9 @@
             @Html.DisplayNameFor(model => model.DownVotes)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.TotalMessages)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.IsActive)
         </th>
         <th>Action</th>
@@ -57,61 +60,64 @@
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Topic)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateAdded)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpVotes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DownVotes)
-            </td>
-            <td>
-                @if (item.IsActive)
-                {
-                    @:Yes
-                }
-                else
-                {
-                    @:No
-                }
-            </td>
-            <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id = item.ForumId }) |*@
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Department)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Topic)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateAdded)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastUpdated)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpVotes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DownVotes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalMessages)
+        </td>
+        <td>
+            @if (item.IsActive)
+        {
+            @:Yes
+    }
+    else
+    {
+        @:No
+}
+        </td>
+        <td>
+            @*@Html.ActionLink("Edit", "Edit", new { id = item.ForumId }) |*@
 
-                @if (item.IsActive)
-                {
-                    <a href="~/Forum/Messages/@item.ForumId">View/Add Comments</a>
-                    @*@Html.ActionLink("View", "Forum", "Messages", new { id = item.ForumId })*@
-                }
-                @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) && Convert.ToInt32(ViewBag.DepartmentId) == item.DepartmentId)
-                {
-                    @:|
+            @if (item.IsActive)
+        {
+            <a href="~/Forum/Messages/@item.ForumId">View/Add Comments</a>
+            @*@Html.ActionLink("View", "Forum", "Messages", new { id = item.ForumId })*@
+    }
+            @if (User.IsInRole(ApplicationRoles.DEPARTMENT_HEAD) && Convert.ToInt32(ViewBag.DepartmentId) == item.DepartmentId)
+        {
+            @:|
 
-                    if (item.IsActive)
-                    {
-                        <a href="~/Forum/Update/@item.ForumId">Deactivate</a>
-                    }
-                    else
-                    {
-                        <a href="~/Forum/Update/@item.ForumId">Activate</a>
-                    }
-                }
-            </td>
-        </tr>
+        if (item.IsActive)
+        {
+            <a href="~/Forum/Update/@item.ForumId">Deactivate</a>
+    }
+    else
+    {
+        <a href="~/Forum/Update/@item.ForumId">Activate</a>
+}
+}
+        </td>
+    </tr>
     }
 
 </table>

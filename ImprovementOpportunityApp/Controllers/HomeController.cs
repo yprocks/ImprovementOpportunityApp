@@ -35,7 +35,7 @@ namespace ImprovementOpportunityApp.Controllers
             var user = await UserManager.FindByNameAsync(User.Identity.Name);
             ViewBag.DepartmentId = user.DepartmentId;
 
-            var forums = await db.Forums.Include(f => f.Department).Include(f => f.Suggestion).Include(f => f.Topic).ToListAsync();
+            var forums = db.Forums.Include(f => f.Department).Include(f => f.Suggestion).Include(f => f.Topic).Include(f => f.ForumMessages);
             var forumList = new List<ForumViewModel>();
 
             foreach (var forum in forums)
@@ -50,7 +50,8 @@ namespace ImprovementOpportunityApp.Controllers
                     ForumId = forum.ForumId,
                     Title = forum.Suggestion.Title,
                     Topic = forum.Topic.Name,
-                    IsActive = forum.IsActive
+                    IsActive = forum.IsActive,
+                    TotalMessages = forum.ForumMessages.Count
                 });
             
             return View(forumList);

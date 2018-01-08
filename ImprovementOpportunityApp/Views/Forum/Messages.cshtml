@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Forum Details</h2>
+<h2>Discussion Board</h2>
 
 <div>
     <hr />
@@ -118,19 +118,20 @@
                     <div class="col-sm-2">
                         <b>@message.UserName</b>
                     </div>
-                    <div class="col-sm-8 text-center" style="padding:0 15px 15px 15px;">
+                    <div class="col-sm-7 text-center" style="padding:0 15px 15px 15px;">
                         @Html.Raw(message.Message)
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         @if (Model.IsActive)
                         {
-                            if (Model.CurrentUserName == message.UserName)
-                            {
-                        <div class="pull-right">
-                            <a href="~/Forum/EditMessage/@message.ForumMessageId" class="">Edit</a> |
-                            <a href="~/Forum/DeleteMessage/@message.ForumMessageId" class="">Delete</a>
-                        </div>
-                            }
+                            <div class="pull-right">
+                                @if (Model.CurrentUserName == message.UserName)
+                                {
+                                    <a href="~/Forum/EditMessage/@message.ForumMessageId" class="">Edit</a> @:|
+                                    <a href="~/Forum/DeleteMessage/@message.ForumMessageId" class="">Delete</a> @:|
+                                }
+                                @*<a href="#" id="reply-message-@message.ForumMessageId" data-id="@message.ForumMessageId" data-toggle="modal" data-target="#replyModal" class="reply-message">Reply</a>*@
+                            </div>
                         }
                     </div>
                 </div>
@@ -161,19 +162,19 @@
         <h2>Comment</h2>
         @using (@Html.BeginForm("AddComment", "Forum", FormMethod.Post,
                         new { @class = "form-horizontal", id = "add-comment" }))
-    {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <input type="hidden" name="ForumId" value="@Model.ForumId" />
-    <label>Add a Comment</label>
-    <textarea placeholder="Add a comment" name="Comment" maxlength="512" class="form-control" required></textarea>
-    @*<br />
-        <label>Add Links </label><input type="text" name="Links" class="form-control" placeholder="Add Links"/>
-        <br />
-        <label>Images </label><input type="file" name="Images" class="form-control" placeholder="Upload Images" />*@
-    <br />
-    <button type="submit" class="btn btn-default">Submit</button>
-    }
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input type="hidden" name="ForumId" value="@Model.ForumId" />
+            <label>Add a Comment</label>
+            <textarea placeholder="Add a comment" name="Comment" maxlength="512" class="form-control" required></textarea>
+            @*<br />
+                <label>Add Links </label><input type="text" name="Links" class="form-control" placeholder="Add Links"/>
+                <br />
+                <label>Images </label><input type="file" name="Images" class="form-control" placeholder="Upload Images" />*@
+            <br />
+            <button type="submit" class="btn btn-default">Submit</button>
+        }
     </div>
 }
 <br />
@@ -181,3 +182,46 @@
     @*@Html.ActionLink("Edit", "Edit", new { id = Model.ForumId }) |*@
     @Html.ActionLink("Back to List", "Index", "Home")
 </p>
+
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="reply-form" method="post" action="~/Forum/Reply" class="form-horizontal">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Reply</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="forum-id" value="@Model.ForumId" />
+                    <input type="hidden" name="MessageId" id="message-id" value="" />
+                    <div class="col-sm-12">
+                        <label for="replyMessage">Message</label>
+                        <textarea id="replyMessage" name="Reply" maxlength="512" required class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).on('ready', function () {
+            $('#replyModal').on('shown.bs.modal', function () {
+                $('#replyMessage').focus();
+            });
+        });
+
+        $('.reply-message').on('click', function (event) {
+            $('#message-id').val($(this).data('id'));
+        })
+    </script>
+}

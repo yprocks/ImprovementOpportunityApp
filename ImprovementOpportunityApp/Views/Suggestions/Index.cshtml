@@ -10,15 +10,16 @@
 
 @if (User.IsInRole(ApplicationRoles.EMPLOYEE))
 {
-    <h2>Your Suggestions</h2>
+    <h2>Your Improvement Opportunity Suggesions</h2>
     <p>
-        @Html.ActionLink("Add Suggestion", "Create")
+        @Html.ActionLink("Add Suggestion", "Create", new { }, new { @class = "btn btn-xs btn-default" })
     </p>
 }
 else
 {
-    <h2>Department Suggestions</h2>
+    <h2>Improvement Opportunity Suggestions</h2>
 }
+<br />
 <table class="table">
     <tr>
         <th>

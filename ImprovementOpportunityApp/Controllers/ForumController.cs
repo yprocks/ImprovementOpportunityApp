@@ -331,7 +331,8 @@ namespace ImprovementOpportunityApp.Controllers
                 .Include(f => f.Department)
                 .Include(f => f.Suggestion)
                 .Include(f => f.Topic)
-                .Where(f => f.Suggestion.Title.ToLower().Contains(query.ToLower()) 
+                .Include(f => f.ForumMessages)
+                .Where(f => f.Suggestion.Title.ToLower().Contains(query.ToLower())
                     || f.Department.Name.ToLower().Contains(query.ToLower())
                     || f.Topic.Name.ToLower().Contains(query.ToLower())
                     || f.DateAdded.Month.ToString() == query
@@ -352,10 +353,34 @@ namespace ImprovementOpportunityApp.Controllers
                     ForumId = forum.ForumId,
                     Title = forum.Suggestion.Title,
                     Topic = forum.Topic.Name,
-                    IsActive = forum.IsActive
+                    IsActive = forum.IsActive,
+                    TotalMessages = forum.ForumMessages.Count
                 });
 
             return View(forumList);
+        }
+
+        public async Task<ActionResult> Reply(ReplyModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await UserManager.FindByNameAsync(User.Identity.Name);
+
+                var message = new ForumMessage
+                {
+                    ForumId = model.Id,
+                    ReplyMessageId = model.MessageId,
+                    Message = model.Reply,
+                    UserId = user.Id
+                };
+
+                db.ForumMessages.Add(message);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Messages", new { id = model.Id });
+            }
+            ModelState.AddModelError("Error ", "Please enter a valid comment");
+            return RedirectToAction("Messages", "Forum", new { id = model.Id });
         }
 
         //// GET: Forum/Delete/5

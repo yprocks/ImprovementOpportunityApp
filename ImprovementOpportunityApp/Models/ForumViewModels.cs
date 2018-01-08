@@ -32,8 +32,13 @@ namespace ImprovementOpportunityApp.Models
         public bool IsActive { get; set; }
 
         public int DepartmentId { get; set; }
+
         public bool? HasUpVoted { get; set; } = null;
+
         public bool HasVoted { get; set; }
+
+        [Display(Name = "Total Messages")]
+        public int TotalMessages { get; set; }
 
         // Fields used for message view 
         public string Links { get; set; }
@@ -90,5 +95,17 @@ namespace ImprovementOpportunityApp.Models
 
         //public string Links { get; set; }
         //public string Images { get; set; }
+    }
+
+    public class ReplyModel
+    {
+        [Required]
+        public int Id { get; set; }
+        [Required]
+        public int MessageId { get; set; }
+        [Required]
+        [StringLength(512)]
+        public string Reply { get; set; }
+
     }
 }
