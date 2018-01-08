@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - IO Analyser</title>
+    <link href="~/favicon.png" rel="shortcut icon" type="image/x-icon" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -17,7 +18,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("IO Analyser", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a class="navbar-brand" href="~/Home">
+                    <span class="logo">
+                        <img style="height: 25px; width: 25px; margin-right: 10px;" class="" src="~/favicon.png"> IO Analyser
+                    </span>
+                </a>
+                @*@Html.ActionLink("IO Analyser", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
             </div>
             <div class="navbar-collapse collapse">
                 @*<ul class="nav navbar-nav">
