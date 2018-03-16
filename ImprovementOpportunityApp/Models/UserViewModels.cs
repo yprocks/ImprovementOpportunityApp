@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ImprovementOpportunityApp.Models
 {
-    public class UserViewModel
+    public class Users
     {
         public string Id { get; set; }
         public string Department { get; set; }
@@ -23,6 +23,15 @@ namespace ImprovementOpportunityApp.Models
         public DateTime LastUpdated { get; set; }
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
+    }
+
+    public class AdminViewModel
+    {
+        public IList<Users> Users { get; set; }
+        public IList<int> WeeklyIOs { get; set; } 
+
+        // TODO: Add logic
+        public Dictionary<string, int> IoDepartmentWise { get; set; }
     }
 
     public class EditUserModel

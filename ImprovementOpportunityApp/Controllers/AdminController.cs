@@ -3,9 +3,11 @@ using ImprovementOpportunityApp.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -38,27 +40,49 @@ namespace ImprovementOpportunityApp.Controllers
         public ActionResult Index()
         {
             var users = db.Users.Include(a => a.Department);
-            IList<UserViewModel> model = new List<UserViewModel>();
+            var model = new AdminViewModel
+            {
+                Users = new List<Users>(),
+                WeeklyIOs = new List<int>(),
+                IoDepartmentWise = new Dictionary<string, int>()
+            };
+
             foreach (var user in users)
             {
                 var userRole = UserManager.GetRoles(user.Id).FirstOrDefault();
-                if (userRole != ApplicationRoles.FIRM_ADMIN)
+                if (userRole == ApplicationRoles.FIRM_ADMIN) continue;
+                var mUser = new Users
                 {
-                    var mUser = new UserViewModel
-                    {
-                        DateAdded = user.DateAdded,
-                        LastUpdated = user.LastUpdated,
-                        Department = user.Department.Name,
-                        Email = user.Email,
-                        FullName = user.FullName,
-                        Id = user.Id,
-                        IsActive = user.IsActive,
-                        UserName = user.UserName,
-                        UserRole = userRole
-                    };
-                    model.Add(mUser);
-                }
+                    DateAdded = user.DateAdded,
+                    LastUpdated = user.LastUpdated,
+                    Department = user.Department.Name,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    Id = user.Id,
+                    IsActive = user.IsActive,
+                    UserName = user.UserName,
+                    UserRole = userRole
+                };
+                model.Users.Add(mUser);
             }
+
+            var date = DateTime.Now;
+            const int range = 7;
+            for (var i = range - 1; i >= 0; i--)
+            {
+                var thisDateTime = date.AddDays(-i);
+                var suggestions = db.Suggestions.Count(c => DbFunctions.TruncateTime(c.DateAdded) == DbFunctions.TruncateTime(thisDateTime));
+                model.WeeklyIOs.Add(suggestions);
+            }
+
+            var departments = db.Departments.ToList();
+
+            foreach (var department in departments)
+            {
+                var suggestions = db.Suggestions.Count(c => c.DepartmentId == department.DepartmentId);
+                model.IoDepartmentWise.Add(department.Name, suggestions);
+            }
+
             return View(model);
         }
 
@@ -67,7 +91,7 @@ namespace ImprovementOpportunityApp.Controllers
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            ApplicationUser user = db.Users.Find(id);
+            var user = db.Users.Find(id);
 
             if (user == null)
                 return HttpNotFound();
