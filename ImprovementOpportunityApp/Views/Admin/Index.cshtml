@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ImprovementOpportunityApp.Models.UserViewModel>
+﻿@model ImprovementOpportunityApp.Models.AdminViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -8,39 +8,52 @@
 <h2>Admin Panel</h2>
 <hr />
 
-<h4>Users</h4>
+<div class="row">
+    <div class="col col-sm-8">
+        <canvas id="lineChart"></canvas>
+        <div class="text-center chart-ios m-t-10 font-bold">Total IOs last week starting on <span id="startDay"></span></div>
+    </div>
+    <div class="col col-sm-4">
+        <canvas id="doughnutChart"></canvas>
+        <div class="text-center chart-ios m-t-10 font-bold">Total IOs department wise</div>
+    </div>
+</div>
+
+<br />
+
+<h3>Users</h3>
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Department)
+            Department
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FullName)
+           Full Name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+           Email
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            User Name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserRole)
+            User Role
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DateAdded)
+            Date Added
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastUpdated)
+            Last Updated
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsActive)
+            Is Active
         </th>
 
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Users)
     {
         <tr>
             <td>
@@ -85,9 +98,102 @@
                 else
                 {
                     <a href="~/Admin/UpdateUserStatus/@item.Id">Activate</a>
-                }            
+                }
             </td>
         </tr>
     }
 
 </table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+@section scripts { 
+<script>
+
+    var Weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    var date = new Date();
+    var dayOfWeek = date.getDay();
+
+    var options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    };
+
+    date.setDate(date.getDate() - 6);
+
+    $('#startDay').text(date.toLocaleDateString("en-us", options));
+
+    var tillCurDaysArray = Weeks.slice(0, dayOfWeek);
+    var fromCurDaysArray = Weeks.slice(dayOfWeek, Weeks.length);
+
+    var WeekDays = fromCurDaysArray.concat(tillCurDaysArray);
+
+    var weeklyIos = [];
+
+    @{
+        foreach (var io in Model.WeeklyIOs)
+        {
+            @:weeklyIos.push(@io);
+        }
+    }
+
+    /**
+     * This is line graph. See doc at http://www.chartjs.org/docs/latest/charts/line.html
+     */
+    var lineCanvas = document.getElementById('lineChart').getContext('2d');
+    var chart = new Chart(lineCanvas, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: WeekDays,
+            datasets: [{
+                label: "Weekly Imporvement Opportunities",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: weeklyIos
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        }
+    });
+
+    var departments = [];
+    var departmentIos = [];
+
+    @{
+        foreach (var entry in Model.IoDepartmentWise)
+        {
+            @:departments.push('@entry.Key');
+            @:departmentIos.push(@entry.Value);
+        }
+      }
+    
+    /**
+    * This is pie graph of type donought. See doc at http://www.chartjs.org/docs/latest/charts/line.html
+    */
+    var doughnutChart = document.getElementById('doughnutChart').getContext('2d');
+    var myDoughnutChart = new Chart(doughnutChart, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: departmentIos,
+                backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe']
+            }],
+            labels: departments
+        },
+        options: {}
+    });
+</script>
+}
