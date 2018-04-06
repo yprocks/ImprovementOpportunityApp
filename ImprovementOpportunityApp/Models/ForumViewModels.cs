@@ -48,7 +48,7 @@ namespace ImprovementOpportunityApp.Models
         public string CurrentUserName { get; set; }
 
         public IList<MessageViewModel> Messages { get; set; }
-      
+
     }
 
     public class MessageViewModel
@@ -108,4 +108,15 @@ namespace ImprovementOpportunityApp.Models
         public string Reply { get; set; }
 
     }
+    public class DeptViewModel
+    {
+        public IList<Users> Users { get; set; }
+        public IList<int> WeeklyIOs { get; set; }
+        public IList<ForumViewModel> ForumList { get; set; }
+        // TODO: Add logic
+        public Dictionary<string, int> IoDepartmentWise { get; set; }
+
+
+    }
+
 }

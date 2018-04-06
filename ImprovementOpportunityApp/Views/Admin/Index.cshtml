@@ -5,8 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+
 <h2>Admin Panel</h2>
 <hr />
+<!-- Examples of creating a Datepicker -->
+Pick the week: <input class="date-picker" />
 
 <div class="row">
     <div class="col col-sm-8">
@@ -29,10 +33,10 @@
             Department
         </th>
         <th>
-           Full Name
+            Full Name
         </th>
         <th>
-           Email
+            Email
         </th>
         <th>
             User Name
@@ -107,8 +111,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 
-@section scripts { 
-<script>
+@section scripts {
+    <script>
 
     var Weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -179,7 +183,7 @@
             @:departmentIos.push(@entry.Value);
         }
       }
-    
+
     /**
     * This is pie graph of type donought. See doc at http://www.chartjs.org/docs/latest/charts/line.html
     */
@@ -195,5 +199,14 @@
         },
         options: {}
     });
-</script>
+    </script>
+
+    <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+    <script type='text/javascript'>
+        $(function () {
+            $('.date-picker').datepicker();
+        })
+    </script>
 }
